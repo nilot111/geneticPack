@@ -5,6 +5,8 @@
  */
 package geneticpack;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author GUERRA
@@ -17,6 +19,7 @@ public class Aeropuerto {
     private String abreviado;
     private String continente;
     private int huso;
+    public ArrayList<Integer> vecinos= new ArrayList<>();
     
     Aeropuerto(){       
         this.id = -1;
@@ -24,6 +27,7 @@ public class Aeropuerto {
         this.pais = "";
         this.ciudad = "";
         this.abreviado = "";
+        this.continente= "";
         this.huso = 0;
     }
     
@@ -42,7 +46,8 @@ public class Aeropuerto {
     }
     
     public void print(){
-        System.out.println(this.getCodAeropuerto() + ", " + this.ciudad + ", " + this.pais);
+        System.out.println(this.getCodAeropuerto() + ", " + this.getCiudad() + ", " + this.getPais()+ ", "+ this.getContinente());
+        //for(int i=0;i<vecinos.size();i++) System.out.println(vecinos.get(i));
     }
 
     /**
@@ -85,5 +90,55 @@ public class Aeropuerto {
      */
     public void setHuso(int huso) {
         this.huso = huso;
-    }    
+    }   
+
+    /**
+     * @return the pais
+     */
+    public String getPais() {
+        return pais;
+    }
+
+    /**
+     * @param pais the pais to set
+     */
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+
+    /**
+     * @return the ciudad
+     */
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    /**
+     * @param ciudad the ciudad to set
+     */
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    /**
+     * @return the abreviado
+     */
+    public String getAbreviado() {
+        return abreviado;
+    }
+
+    /**
+     * @param abreviado the abreviado to set
+     */
+    public void setAbreviado(String abreviado) {
+        this.abreviado = abreviado;
+    }
+
+    /**
+     * @return the vecinos
+     */
+
+
+
+    
 }
