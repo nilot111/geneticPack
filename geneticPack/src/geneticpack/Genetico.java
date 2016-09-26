@@ -13,8 +13,8 @@ import java.util.Random;
  * @author GUERRA
  */
 public class Genetico {
-    private int maxPoblacion = 200;
-    private int maxGeneraciones=25;
+    private int maxPoblacion = 1000;
+    private int maxGeneraciones=200;
     private double probMutacion=0.01;
     private ArrayList<Ruta> universoRutas= new ArrayList<>();
     private ArrayList<Cromosoma> cromosomas= new ArrayList<>();
@@ -31,8 +31,11 @@ public class Genetico {
     }
     
     public void reproduccion(int fitnessTotal){
+        Cromosoma bestCrom= new Cromosoma();
+        bestCrom.fitness=0;
         for(int i=0;i<maxGeneraciones;i++){
             int auxFitnesstotal=0;
+            
             ArrayList<Cromosoma> offspring= new ArrayList<>();
             for(int j=0;j<maxPoblacion;j++){
                 Random semilla = new Random(); // seleccionar padre
@@ -51,13 +54,25 @@ public class Genetico {
                                         ,cromosomas.get(0).alelos.size());
                 mutacion(hijo);
                 hijo.fitness=calcFitness(hijo);
+                if(hijo.fitness>bestCrom.fitness) bestCrom=hijo;
                 auxFitnesstotal+=hijo.fitness;
                 offspring.add(hijo);
             }
             fitnessTotal=auxFitnesstotal;
-            System.out.println("generacion-"+i+" Fitnessprom= "+fitnessTotal/maxPoblacion);
+            //System.out.println("generacion-"+i+" Fitnessprom= "+fitnessTotal/maxPoblacion);
             for(int h=0;h<maxPoblacion;h++) // reemplazo de nueva generacion
                 cromosomas.set(h, offspring.get(h));
+        }
+        
+        for(int i=0;i<bestCrom.alelos.size();i++){
+            Ruta rutasPacki=bestCrom.alelos.get(i);
+            System.out.print("Paquete "+i+":");
+            for(int j=0;j<rutasPacki.vuelos.size();j++){
+                Vuelo vuelo= rutasPacki.vuelos.get(j);
+                System.out.print(vuelo.getOrigen()+"-"+vuelo.getDestino()+"//");
+            }
+            System.out.println("------Tiempo: "+bestCrom.tiempos.get(i));
+            
         }
     }
     
@@ -97,7 +112,7 @@ public class Genetico {
                 ArrayList<Ruta> rutasOF=generarRutasOF(pedidos.get(j).getOrigen(),
                                         pedidos.get(j).getDestino(),aeropuertos);
                 Random rn = new Random();
-                for(int h=0;h<pedidos.get(j).getCant();h++){                   
+                for(int h=0;h<pedidos.get(j).getCant();h++){             
                     crom.alelos.add(rutasOF.get(rn.nextInt(rutasOF.size()))); //generamos aleatoriamente su ruta
                 }
             }
@@ -112,16 +127,19 @@ public class Genetico {
         int fitness=0;
         for(int i=0;i<crom.alelos.size();i++){
             Ruta ruta= crom.alelos.get(i);
+            int tiempo=0;
             for(int j=0;j<ruta.vuelos.size();j++){
                 Vuelo vuelo=ruta.vuelos.get(j);
+                tiempo+=vuelo.getTiempo();//se suma tiempo de vuelo
                 fitness+=vuelo.getTiempo();//se suma tiempo de vuelo
                 if(j>0){ // si hay escala
                     int tEspera=vuelo.gethSalida()-ruta.vuelos.get(j-1).gethLlegada();//tiempo de espera
                     if(tEspera<0) tEspera+=24; // en caso el vuelo sea tomado el dia siguiente
                     fitness+=tEspera;
+                    tiempo+=tEspera;
                 }
             }
-            
+            crom.tiempos.add(tiempo);           
         }
         fitness=48*crom.alelos.size()-fitness;
         return fitness;
@@ -129,6 +147,8 @@ public class Genetico {
     public ArrayList<Ruta> generarRutasOF(String origen, String fin,
                                 ArrayList<Aeropuerto> aeropuertos){
         ArrayList<Ruta> rutasOF= new ArrayList<>();
+        Boolean esCont=esContinental(origen,fin,aeropuertos);
+        int tMax=(esCont)?24:48;
         for(int i=0;i<aeropuertos.size();i++){
             if(origen.equals(aeropuertos.get(i).getCodAeropuerto())){ // aeropuerto1 es origen
                 for(int j=0;j<aeropuertos.get(i).vuelos.size();j++){
@@ -139,12 +159,20 @@ public class Genetico {
                         ruta1.vuelos.add(vuelo1);
                         rutasOF.add(ruta1);                        
                     }                    
-                    
+                    if(esCont) continue;
                     for(int h=0;h<aero2.vuelos.size();h++){
                         Vuelo vuelo2=aero2.vuelos.get(h);
                         Aeropuerto aero3=vuelo2.getAeroFin();
                         
                         if(aero3.getCodAeropuerto().equals(fin)){
+                            int tiempo=0;
+                            tiempo+=vuelo1.getTiempo();
+                            int tEspera=vuelo2.gethSalida()-vuelo1.gethLlegada();//tiempo de espera
+                            if(tEspera<0) tEspera+=24; // en caso el vuelo sea tomado el dia siguiente    
+                            tiempo+=tEspera;
+                            tiempo+=vuelo2.getTiempo();
+                            
+                            if(tiempo>tMax) continue;
                             Ruta ruta2 = new Ruta();
                             ruta2.vuelos.add(vuelo1);
                             ruta2.vuelos.add(vuelo2);  
@@ -157,7 +185,18 @@ public class Genetico {
         }
         return rutasOF;
     }    
- 
+    public Boolean esContinental(String origen,String fin,ArrayList<Aeropuerto> aeropuertos){
+        Boolean cont=false;
+        int nOrig=-1,nfin=-1;
+        for(int i=0;i<aeropuertos.size();i++){
+            if(aeropuertos.get(i).getCodAeropuerto().equals(origen)) nOrig=i;
+            if(aeropuertos.get(i).getCodAeropuerto().equals(fin)) nfin=i;
+            if(nOrig>=0 && nfin>=0) break;
+        }
+        if(aeropuertos.get(nOrig).getContinente().equals(aeropuertos.get(nfin).getContinente())) // si son mismo continente
+            cont=true;
+        return cont;
+    }
    /*
     public ArrayList<Ruta> generarRutasOF(String origen, String fin,
                                 ArrayList<Aeropuerto> aeropuertos){

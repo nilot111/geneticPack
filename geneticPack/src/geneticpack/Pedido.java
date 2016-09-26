@@ -13,6 +13,7 @@ public class Pedido {
     private String origen;
     private String destino;
     private int cant;
+    private int hora=7;
     
     Pedido(String origen, String destino, int cant){
         this.origen=origen;
