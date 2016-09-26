@@ -12,9 +12,17 @@ import java.util.ArrayList;
  * @author GUERRA
  */
 public class Ruta {
-    public ArrayList<Integer> aeropuertos = new ArrayList<>();
+    public ArrayList<Vuelo> vuelos = new ArrayList<>();
     public int tiempo=0;
     Ruta(){
         
+    }
+    
+    public void print(){
+        for(int i=0;i<vuelos.size();i++){
+            System.out.print(vuelos.get(i).getAeroOrig().getCodAeropuerto()+"-"+
+                            vuelos.get(i).getAeroFin().getCodAeropuerto()+"/");
+        }
+        System.out.println();
     }
 }

@@ -20,7 +20,7 @@ public class Aeropuerto {
     private String continente;
     private int huso;
     public ArrayList<Integer> vecinos= new ArrayList<>();
-    
+    public ArrayList<Vuelo> vuelos= new ArrayList<>();
     Aeropuerto(){       
         this.id = -1;
         this.codAeropuerto = "";

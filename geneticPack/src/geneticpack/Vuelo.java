@@ -21,6 +21,8 @@ public class Vuelo {
     private int id;
     private int husoO;
     private int husoD;
+    private Aeropuerto aeroOrig;
+    private Aeropuerto aeroFin;
     Vuelo(){
         
         hSalida = 0;
@@ -170,5 +172,33 @@ public class Vuelo {
      */
     public void setId(int id) {
         this.id = id;
+    }
+
+    /**
+     * @return the aeroOrig
+     */
+    public Aeropuerto getAeroOrig() {
+        return aeroOrig;
+    }
+
+    /**
+     * @param aeroOrig the aeroOrig to set
+     */
+    public void setAeroOrig(Aeropuerto aeroOrig) {
+        this.aeroOrig = aeroOrig;
+    }
+
+    /**
+     * @return the aeroFin
+     */
+    public Aeropuerto getAeroFin() {
+        return aeroFin;
+    }
+
+    /**
+     * @param aeroFin the aeroFin to set
+     */
+    public void setAeroFin(Aeropuerto aeroFin) {
+        this.aeroFin = aeroFin;
     }
 }

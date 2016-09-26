@@ -27,7 +27,7 @@ public class GeneticPack {
         lector.leerArchivos("Extras/_aeropuertos.OACI.txt", "Extras/_plan_vuelo.txt",
                             "Extras/_pedidos.txt", vuelos, aeropuertos, pedidos);
         asignarTipovuelo(vuelos,aeropuertos);
-        for(int i=0;i<aeropuertos.size();i++) aeropuertos.get(i).print();
+        //for(int i=0;i<aeropuertos.size();i++) aeropuertos.get(i).print();
         //for(int i=0;i<vuelos.size();i++) vuelos.get(i).print();
         Genetico algoritmo= new Genetico();
         algoritmo.ejecutar(aeropuertos,vuelos,pedidos);
@@ -63,6 +63,9 @@ public class GeneticPack {
                     }
                     //agrego vecinos de mi aeropuerto
                     if(!aeropuertos.get(nOrig).vecinos.contains(nFin))aeropuertos.get(nOrig).vecinos.add(nFin);
+                    aeropuertos.get(nOrig).vuelos.add(vuelos.get(i));// agrego vuelos del aeropuerto
+                    vuelos.get(i).setAeroOrig(aeropuertos.get(nOrig));//agrego aeropuerto origen
+                    vuelos.get(i).setAeroFin(aeropuertos.get(nFin)); // agrego aeropuerto fin
                     break;
                 } 
                 
