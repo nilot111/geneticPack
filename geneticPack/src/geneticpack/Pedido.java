@@ -13,7 +13,7 @@ public class Pedido {
     private String origen;
     private String destino;
     private int cant;
-    private int hora=7;
+    private int hora=9;
     
     Pedido(String origen, String destino, int cant){
         this.origen=origen;
@@ -57,5 +57,19 @@ public class Pedido {
      */
     public int getCant() {
         return cant;
+    }
+
+    /**
+     * @return the hora
+     */
+    public int getHora() {
+        return hora;
+    }
+
+    /**
+     * @param hora the hora to set
+     */
+    public void setHora(int hora) {
+        this.hora = hora;
     }
 }

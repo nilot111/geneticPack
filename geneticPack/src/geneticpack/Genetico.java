@@ -13,8 +13,8 @@ import java.util.Random;
  * @author GUERRA
  */
 public class Genetico {
-    private int maxPoblacion = 1000;
-    private int maxGeneraciones=200;
+    private int maxPoblacion = 1000; // maximo numero de soluciones posibles
+    private int maxGeneraciones=300; // maxiteraciones
     private double probMutacion=0.01;
     private ArrayList<Ruta> universoRutas= new ArrayList<>();
     private ArrayList<Cromosoma> cromosomas= new ArrayList<>();
@@ -96,11 +96,17 @@ public class Genetico {
             posIni=posFin;
             posFin=aux;
         }
-        for(int i=0;i<nPaquetes;i++) hijo.alelos.add(madre.alelos.get(i)); // inicializo hijo con madre
+        for(int i=0;i<nPaquetes;i++) {
+            hijo.alelos.add(madre.alelos.get(i));
+            hijo.pedidos.add(madre.pedidos.get(i));
+        } // inicializo hijo con madre
         //System.out.println(posIni);
         //System.out.println(posFin);
         for (int i = 0; i < nPaquetes; i++) {
-            if(i<posIni || i>posFin) hijo.alelos.set(i,padre.alelos.get(i)); //hereda del padre
+            if(i<posIni || i>posFin) {
+                hijo.alelos.set(i,padre.alelos.get(i));
+                hijo.pedidos.set(i,padre.pedidos.get(i) );
+            } //hereda del padre
         }
         return hijo;       
     } 
@@ -110,11 +116,13 @@ public class Genetico {
             Cromosoma crom= new Cromosoma();
             for(int j=0;j<pedidos.size();j++){
                 ArrayList<Ruta> rutasOF=generarRutasOF(pedidos.get(j).getOrigen(),
-                                        pedidos.get(j).getDestino(),aeropuertos);
+                                        pedidos.get(j).getDestino(),aeropuertos,pedidos.get(j).getHora());
                 Random rn = new Random();
                 for(int h=0;h<pedidos.get(j).getCant();h++){             
                     crom.alelos.add(rutasOF.get(rn.nextInt(rutasOF.size()))); //generamos aleatoriamente su ruta
+                    crom.pedidos.add(pedidos.get(j));
                 }
+                
             }
             int fitness=calcFitness(crom);
             fitnessTotal+=fitness;
@@ -125,27 +133,31 @@ public class Genetico {
     }
     public int calcFitness(Cromosoma crom){
         int fitness=0;
+        int tiempoTotal=0;
         for(int i=0;i<crom.alelos.size();i++){
             Ruta ruta= crom.alelos.get(i);
             int tiempo=0;
+            //System.out.println(crom.pedidos.size());
+            tiempo+=ruta.vuelos.get(0).gethSalida()-crom.pedidos.get(i).getHora();
+            if(tiempo<0) tiempo+=24;
             for(int j=0;j<ruta.vuelos.size();j++){
                 Vuelo vuelo=ruta.vuelos.get(j);
                 tiempo+=vuelo.getTiempo();//se suma tiempo de vuelo
-                fitness+=vuelo.getTiempo();//se suma tiempo de vuelo
+
                 if(j>0){ // si hay escala
                     int tEspera=vuelo.gethSalida()-ruta.vuelos.get(j-1).gethLlegada();//tiempo de espera
                     if(tEspera<0) tEspera+=24; // en caso el vuelo sea tomado el dia siguiente
-                    fitness+=tEspera;
                     tiempo+=tEspera;
                 }
             }
+            tiempoTotal+=tiempo;
             crom.tiempos.add(tiempo);           
         }
-        fitness=48*crom.alelos.size()-fitness;
+        fitness=48*crom.alelos.size()-tiempoTotal;
         return fitness;
     }
     public ArrayList<Ruta> generarRutasOF(String origen, String fin,
-                                ArrayList<Aeropuerto> aeropuertos){
+                                ArrayList<Aeropuerto> aeropuertos,int hora){
         ArrayList<Ruta> rutasOF= new ArrayList<>();
         Boolean esCont=esContinental(origen,fin,aeropuertos);
         int tMax=(esCont)?24:48;
@@ -166,6 +178,8 @@ public class Genetico {
                         
                         if(aero3.getCodAeropuerto().equals(fin)){
                             int tiempo=0;
+                            tiempo+=vuelo1.gethSalida()-hora;
+                            if(tiempo<0) tiempo+=24;
                             tiempo+=vuelo1.getTiempo();
                             int tEspera=vuelo2.gethSalida()-vuelo1.gethLlegada();//tiempo de espera
                             if(tEspera<0) tEspera+=24; // en caso el vuelo sea tomado el dia siguiente    

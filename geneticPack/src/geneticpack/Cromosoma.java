@@ -14,5 +14,6 @@ import java.util.ArrayList;
 public class Cromosoma {
     public ArrayList<Ruta> alelos = new ArrayList<>();
     public ArrayList<Integer> tiempos = new ArrayList<>();
+    public ArrayList<Pedido> pedidos = new ArrayList<>();
     public int fitness=0;
 }
