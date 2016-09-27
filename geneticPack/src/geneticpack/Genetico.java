@@ -67,9 +67,17 @@ public class Genetico {
         for(int i=0;i<bestCrom.alelos.size();i++){
             Ruta rutasPacki=bestCrom.alelos.get(i);
             System.out.print("Paquete "+i+":");
+            Aeropuerto aeroPackO=rutasPacki.vuelos.get(0).getAeroOrig(); // asigno espacio usado
+            Aeropuerto aeroPackF=rutasPacki.vuelos.get(0).getAeroFin();
+            aeroPackO.setCantEspacioUsado(aeroPackO.getCantEspacioUsado()+1);
+            aeroPackF.setCantEspacioUsado(aeroPackF.getCantEspacioUsado()+1);
             for(int j=0;j<rutasPacki.vuelos.size();j++){
                 Vuelo vuelo= rutasPacki.vuelos.get(j);
                 System.out.print(vuelo.getOrigen()+"-"+vuelo.getDestino()+"//");
+                if(j>0){
+                    Aeropuerto aeroDest=rutasPacki.vuelos.get(j).getAeroFin();
+                    aeroDest.setCantEspacioUsado(aeroDest.getCantEspacioUsado()+1);
+                }
             }
             System.out.println("------Tiempo: "+bestCrom.tiempos.get(i));
             
