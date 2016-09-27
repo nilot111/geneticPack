@@ -31,7 +31,7 @@ public class GeneticPack {
         //for(int i=0;i<vuelos.size();i++) vuelos.get(i).print();
         Genetico algoritmo= new Genetico();
         algoritmo.ejecutar(aeropuertos,vuelos,pedidos);
-        imprimirAeros(aeropuertos);
+        //imprimirAeros(aeropuertos);
     }
     
     public static void imprimirAeros(ArrayList<Aeropuerto> aeropuertos){

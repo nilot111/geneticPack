@@ -63,9 +63,10 @@ public class Genetico {
             for(int h=0;h<maxPoblacion;h++) // reemplazo de nueva generacion
                 cromosomas.set(h, offspring.get(h));
         }
-        
+        int tiempoTotal=0;
         for(int i=0;i<bestCrom.alelos.size();i++){
             Ruta rutasPacki=bestCrom.alelos.get(i);
+            
             System.out.print("Paquete "+i+":");
             Aeropuerto aeroPackO=rutasPacki.vuelos.get(0).getAeroOrig(); // asigno espacio usado
             Aeropuerto aeroPackF=rutasPacki.vuelos.get(0).getAeroFin();
@@ -80,8 +81,10 @@ public class Genetico {
                 }
             }
             System.out.println("------Tiempo: "+bestCrom.tiempos.get(i));
+            tiempoTotal+=bestCrom.tiempos.get(i);
             
         }
+        System.out.println("Tiempo total de entrega de paquetes: "+tiempoTotal);
     }
     
     public void mutacion(Cromosoma crom){
