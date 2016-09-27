@@ -13,8 +13,8 @@ import java.util.Random;
  * @author GUERRA
  */
 public class Genetico {
-    private int maxPoblacion = 1000; // maximo numero de soluciones posibles
-    private int maxGeneraciones=300; // maxiteraciones
+    private int maxPoblacion = 300; // maximo numero de soluciones posibles
+    private int maxGeneraciones=100; // maxiteraciones
     private double probMutacion=0.01;
     private ArrayList<Ruta> universoRutas= new ArrayList<>();
     private ArrayList<Cromosoma> cromosomas= new ArrayList<>();
