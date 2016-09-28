@@ -20,6 +20,7 @@ public class Aeropuerto {
     private String continente;
     private int huso;
     private int cantEspacioUsado=0;
+    private int capacidad=0;
     public ArrayList<Integer> vecinos= new ArrayList<>();
     public ArrayList<Vuelo> vuelos= new ArrayList<>();
     Aeropuerto(){       
@@ -147,6 +148,20 @@ public class Aeropuerto {
      */
     public void setCantEspacioUsado(int cantEspacioUsado) {
         this.cantEspacioUsado = cantEspacioUsado;
+    }
+
+    /**
+     * @return the capacidad
+     */
+    public int getCapacidad() {
+        return capacidad;
+    }
+
+    /**
+     * @param capacidad the capacidad to set
+     */
+    public void setCapacidad(int capacidad) {
+        this.capacidad = capacidad;
     }
 
     /**

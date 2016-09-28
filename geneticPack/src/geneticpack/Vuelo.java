@@ -21,6 +21,8 @@ public class Vuelo {
     private int id;
     private int husoO;
     private int husoD;
+    private int capacidad=0;
+    private int cantEspacioUsado=0;
     private Aeropuerto aeroOrig;
     private Aeropuerto aeroFin;
     Vuelo(){
@@ -200,5 +202,19 @@ public class Vuelo {
      */
     public void setAeroFin(Aeropuerto aeroFin) {
         this.aeroFin = aeroFin;
+    }
+
+    /**
+     * @return the cantEspacioUsado
+     */
+    public int getCantEspacioUsado() {
+        return cantEspacioUsado;
+    }
+
+    /**
+     * @param cantEspacioUsado the cantEspacioUsado to set
+     */
+    public void setCantEspacioUsado(int cantEspacioUsado) {
+        this.cantEspacioUsado = cantEspacioUsado;
     }
 }
