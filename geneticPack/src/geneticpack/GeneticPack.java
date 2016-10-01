@@ -36,7 +36,8 @@ public class GeneticPack {
     
     public static void imprimirAeros(ArrayList<Aeropuerto> aeropuertos){
         for(int i=0;i<aeropuertos.size();i++){
-            System.out.println(aeropuertos.get(i).getCiudad()+" cant: "+aeropuertos.get(i).getCantEspacioUsado());
+            //System.out.println(aeropuertos.get(i).getCiudad()+" cant: "+aeropuertos.get(i).getCantEspacioUsado());
+            System.out.println(aeropuertos.get(i).getCiudad());
         }
     }
     

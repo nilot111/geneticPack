@@ -6,6 +6,8 @@
 package geneticpack;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
+import javafx.util.Pair;
 
 /**
  *
@@ -18,11 +20,10 @@ public class Aeropuerto {
     private String ciudad;
     private String abreviado;
     private String continente;
-    private int huso;
-    private int cantEspacioUsado=0;
-    private int capacidad=0;
+    private int capacidadTotal=0;
     public ArrayList<Integer> vecinos= new ArrayList<>();
     public ArrayList<Vuelo> vuelos= new ArrayList<>();
+    public TreeMap<Pair,Integer> capTime = new TreeMap<>(); // capacidades en el tiempo
     Aeropuerto(){       
         this.id = -1;
         this.codAeropuerto = "";
@@ -30,7 +31,6 @@ public class Aeropuerto {
         this.ciudad = "";
         this.abreviado = "";
         this.continente= "";
-        this.huso = 0;
     }
     
     Aeropuerto(int vId, String vCodAeropuerto, String vCiudad, String vPais, String vAbreviado, String vContinente){
@@ -40,6 +40,8 @@ public class Aeropuerto {
         this.pais = vPais;
         this.abreviado = vAbreviado;
         this.continente = vContinente;
+        //inicializar capacidades en tiempo
+        
     }
     
     public double distancia(Aeropuerto n){
@@ -80,19 +82,6 @@ public class Aeropuerto {
         this.continente = continente;
     }
 
-    /**
-     * @return the huso
-     */
-    public int getHuso() {
-        return huso;
-    }
-
-    /**
-     * @param huso the huso to set
-     */
-    public void setHuso(int huso) {
-        this.huso = huso;
-    }   
 
     /**
      * @return the pais
@@ -139,29 +128,19 @@ public class Aeropuerto {
     /**
      * @return the cantEspacioUsado
      */
-    public int getCantEspacioUsado() {
-        return cantEspacioUsado;
-    }
-
-    /**
-     * @param cantEspacioUsado the cantEspacioUsado to set
-     */
-    public void setCantEspacioUsado(int cantEspacioUsado) {
-        this.cantEspacioUsado = cantEspacioUsado;
-    }
 
     /**
      * @return the capacidad
      */
     public int getCapacidad() {
-        return capacidad;
+        return capacidadTotal;
     }
 
     /**
      * @param capacidad the capacidad to set
      */
     public void setCapacidad(int capacidad) {
-        this.capacidad = capacidad;
+        this.capacidadTotal = capacidad;
     }
 
     /**
