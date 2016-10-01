@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
@@ -18,13 +19,13 @@ import java.util.logging.Logger;
  */
 public class Lectura {
     public void leerArchivos(String archAeropuertos,String archVuelos,String archPedidos,ArrayList<Vuelo> vuelos,
-                            ArrayList<Aeropuerto> aeropuertos, ArrayList<Pedido> pedidos){
+                            TreeMap<String,Aeropuerto>  aeropuertos, ArrayList<Pedido> pedidos){
         leerAeropuertos(archAeropuertos,aeropuertos);
         leerVuelos(archVuelos,vuelos);
         leerPedidos(archPedidos,pedidos);
     }
 
-    public void leerAeropuertos(String archAeropuertos,ArrayList<Aeropuerto> aeropuertos){
+    public void leerAeropuertos(String archAeropuertos,TreeMap<String,Aeropuerto> aeropuertos){
         
         String line;
         String [] value;
@@ -59,7 +60,7 @@ public class Lectura {
                 pais = value[3];
                 abreviado = value[4];
                 Aeropuerto aero= new Aeropuerto(id, codAeropuerto, ciudad, pais, abreviado, continente);
-                aeropuertos.add(aero);
+                aeropuertos.put(codAeropuerto,aero);
             }
              br.close();
         } catch (IOException ex) {

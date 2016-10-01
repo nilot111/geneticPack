@@ -7,6 +7,7 @@ package geneticpack;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.TreeMap;
 
 /**
  *
@@ -21,7 +22,7 @@ public class Genetico {
     Genetico(){
         
     }
-    public void ejecutar(ArrayList<Aeropuerto> aeropuertos, ArrayList<Vuelo> vuelos,
+    public void ejecutar(TreeMap<String,Aeropuerto> aeropuertos, ArrayList<Vuelo> vuelos,
                          ArrayList<Pedido> pedidos){
         //generarRutas(aeropuertos);
         int fitnessTotal=generarPoblacion(pedidos,aeropuertos);
@@ -121,7 +122,7 @@ public class Genetico {
         }
         return hijo;       
     } 
-    public int generarPoblacion(ArrayList<Pedido> pedidos,ArrayList<Aeropuerto> aeropuertos){
+    public int generarPoblacion(ArrayList<Pedido> pedidos,TreeMap<String,Aeropuerto> aeropuertos){
         int fitnessTotal=0;
         for(int i=0;i<maxPoblacion;i++){
             Cromosoma crom= new Cromosoma();
@@ -168,10 +169,11 @@ public class Genetico {
         return fitness;
     }
     public ArrayList<Ruta> generarRutasOF(String origen, String fin,
-                                ArrayList<Aeropuerto> aeropuertos,int hora){
+                                TreeMap<String,Aeropuerto> aeropuertos,int hora){
         ArrayList<Ruta> rutasOF= new ArrayList<>();
         Boolean esCont=esContinental(origen,fin,aeropuertos);
         int tMax=(esCont)?24:48;
+        
         for(int i=0;i<aeropuertos.size();i++){
             if(origen.equals(aeropuertos.get(i).getCodAeropuerto())){ // aeropuerto1 es origen
                 for(int j=0;j<aeropuertos.get(i).vuelos.size();j++){
@@ -210,7 +212,7 @@ public class Genetico {
         }
         return rutasOF;
     }    
-    public Boolean esContinental(String origen,String fin,ArrayList<Aeropuerto> aeropuertos){
+    public Boolean esContinental(String origen,String fin,TreeMap<String,Aeropuerto> aeropuertos){
         Boolean cont=false;
         int nOrig=-1,nfin=-1;
         for(int i=0;i<aeropuertos.size();i++){

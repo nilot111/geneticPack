@@ -20,8 +20,8 @@ public class Aeropuerto {
     private String ciudad;
     private String abreviado;
     private String continente;
-    private int capacidadTotal=0;
-    public ArrayList<Integer> vecinos= new ArrayList<>();
+    private int capacidadTotal=600;
+    public ArrayList<String> vecinos= new ArrayList<>();
     public ArrayList<Vuelo> vuelos= new ArrayList<>();
     public TreeMap<Pair,Integer> capTime = new TreeMap<>(); // capacidades en el tiempo
     Aeropuerto(){       
@@ -41,6 +41,13 @@ public class Aeropuerto {
         this.abreviado = vAbreviado;
         this.continente = vContinente;
         //inicializar capacidades en tiempo
+        //for(int i=0;i<7;i++){
+          //  for(int j=0;j<24;j++){
+            //    Pair<Integer,Integer> key= new Pair<>(i,j);
+              //  capTime.put(key, capacidadTotal);
+            //}         
+            
+        //}
         
     }
     
