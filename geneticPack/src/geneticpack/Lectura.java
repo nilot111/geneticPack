@@ -19,13 +19,13 @@ import java.util.logging.Logger;
  */
 public class Lectura {
     public void leerArchivos(String archAeropuertos,String archVuelos,String archPedidos,ArrayList<Vuelo> vuelos,
-                            TreeMap<String,Aeropuerto>  aeropuertos, ArrayList<Pedido> pedidos){
+                            TreeMap<String,Ciudad>  aeropuertos, ArrayList<Pedido> pedidos){
         leerAeropuertos(archAeropuertos,aeropuertos);
         leerVuelos(archVuelos,vuelos);
         leerPedidos(archPedidos,pedidos);
     }
 
-    public void leerAeropuertos(String archAeropuertos,TreeMap<String,Aeropuerto> aeropuertos){
+    public void leerAeropuertos(String archAeropuertos,TreeMap<String,Ciudad> aeropuertos){
         
         String line;
         String [] value;
@@ -59,7 +59,7 @@ public class Lectura {
                 ciudad = value[2];
                 pais = value[3];
                 abreviado = value[4];
-                Aeropuerto aero= new Aeropuerto(id, codAeropuerto, ciudad, pais, abreviado, continente);
+                Ciudad aero= new Ciudad(id, codAeropuerto, ciudad, pais, abreviado, continente);
                 aeropuertos.put(codAeropuerto,aero);
             }
              br.close();

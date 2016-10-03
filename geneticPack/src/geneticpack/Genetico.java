@@ -14,18 +14,19 @@ import java.util.TreeMap;
  * @author GUERRA
  */
 public class Genetico {
-    private int maxPoblacion = 30; // maximo numero de soluciones posibles
-    private int maxGeneraciones=10; // maxiteraciones
+    private int maxPoblacion = 200; // maximo numero de soluciones posibles
+    private int maxGeneraciones=50; // maxiteraciones
     private double probMutacion=0.01;
     private ArrayList<Ruta> universoRutas= new ArrayList<>();
     private ArrayList<Cromosoma> cromosomas= new ArrayList<>();
     Genetico(){
         
     }
-    public void ejecutar(TreeMap<String,Aeropuerto> aeropuertos, ArrayList<Vuelo> vuelos,
+    public void ejecutar(TreeMap<String,Ciudad> aeropuertos, ArrayList<Vuelo> vuelos,
                          ArrayList<Pedido> pedidos){
         //generarRutas(aeropuertos);
         int fitnessTotal=generarPoblacion(pedidos,aeropuertos);
+        System.out.println("fitness Total: "+fitnessTotal);
         //ArrayList<Ruta> rutas= generarRutasOF("SPIM","SGAS",aeropuertos);
         //for(int i=0;i<rutas.size();i++) rutas.get(i).print();
         reproduccion(fitnessTotal);
@@ -52,7 +53,7 @@ public class Genetico {
                     sumafit+=cromosomas.get(encMadre++).fitness;
                 }
                 Cromosoma hijo= crossover(cromosomas.get(--encPadre),cromosomas.get(--encMadre)
-                                        ,cromosomas.get(0).alelos.size());
+                                        ,cromosomas.get(0).genes.size());
                 mutacion(hijo);
                 hijo.fitness=calcFitness(hijo);
                 if(hijo.fitness>bestCrom.fitness) bestCrom=hijo;
@@ -60,13 +61,14 @@ public class Genetico {
                 offspring.add(hijo);
             }
             fitnessTotal=auxFitnesstotal;
-            //System.out.println("generacion-"+i+" Fitnessprom= "+fitnessTotal/maxPoblacion);
+            System.out.println("generacion-"+i+" Fitnessprom= "+fitnessTotal/maxPoblacion);
             for(int h=0;h<maxPoblacion;h++) // reemplazo de nueva generacion
                 cromosomas.set(h, offspring.get(h));
         }
+        /*
         int tiempoTotal=0;
-        for(int i=0;i<bestCrom.alelos.size();i++){
-            Ruta rutasPacki=bestCrom.alelos.get(i);
+        for(int i=0;i<bestCrom.genes.size();i++){
+            Ruta rutasPacki=bestCrom.genes.get(i).ruta;
             
             System.out.print("Paquete "+i+":");
             //Aeropuerto aeroPackO=rutasPacki.vuelos.get(0).getAeroOrig(); 
@@ -76,16 +78,17 @@ public class Genetico {
             for(int j=0;j<rutasPacki.vuelos.size();j++){
                 Vuelo vuelo= rutasPacki.vuelos.get(j);
                 System.out.print(vuelo.getOrigen()+"-"+vuelo.getDestino()+"//");
-                /*if(j>0){
+                if(j>0){
                     Aeropuerto aeroDest=rutasPacki.vuelos.get(j).getAeroFin();
                     aeroDest.setCantEspacioUsado(aeroDest.getCantEspacioUsado()+1);
-                }*/
+                }
             }
-            System.out.println("------Tiempo: "+bestCrom.tiempos.get(i));
-            tiempoTotal+=bestCrom.tiempos.get(i);
+            System.out.println("------Tiempo: "+bestCrom.genes.get(i).tiempo);
+            tiempoTotal+=bestCrom.genes.get(i).tiempo;
             
         }
         System.out.println("Tiempo total de entrega de paquetes: "+tiempoTotal);
+        */
     }
     
     public void mutacion(Cromosoma crom){
@@ -93,8 +96,8 @@ public class Genetico {
             Random paqueteRand = new Random();
             Random rutaRand = new Random();
             int cromNumber = rutaRand.nextInt(maxPoblacion);
-            int aleloNumber = paqueteRand.nextInt(crom.alelos.size());
-            crom.alelos.set(aleloNumber, cromosomas.get(cromNumber).alelos.get(aleloNumber));
+            int aleloNumber = paqueteRand.nextInt(crom.genes.size());
+            crom.genes.set(aleloNumber, cromosomas.get(cromNumber).genes.get(aleloNumber));
         }    
     }
     public Cromosoma crossover(Cromosoma padre,Cromosoma madre,int nPaquetes) {
@@ -109,152 +112,56 @@ public class Genetico {
             posFin=aux;
         }
         for(int i=0;i<nPaquetes;i++) {
-            hijo.alelos.add(madre.alelos.get(i));
-            hijo.pedidos.add(madre.pedidos.get(i));
+            hijo.genes.add(madre.genes.get(i));
         } // inicializo hijo con madre
         //System.out.println(posIni);
         //System.out.println(posFin);
         for (int i = 0; i < nPaquetes; i++) {
             if(i<posIni || i>posFin) {
-                hijo.alelos.set(i,padre.alelos.get(i));
-                hijo.pedidos.set(i,padre.pedidos.get(i) );
+                hijo.genes.set(i,padre.genes.get(i));
             } //hereda del padre
         }
         return hijo;       
     } 
-    public int generarPoblacion(ArrayList<Pedido> pedidos,TreeMap<String,Aeropuerto> aeropuertos){
+    public int generarPoblacion(ArrayList<Pedido> pedidos,TreeMap<String,Ciudad> ciudades){
         int fitnessTotal=0;
         for(int i=0;i<maxPoblacion;i++){
             Cromosoma crom= new Cromosoma();
             for(int j=0;j<pedidos.size();j++){
-                ArrayList<Ruta> rutasOF=generarRutasOF(pedidos.get(j).getOrigen(),
-                                        pedidos.get(j).getDestino(),aeropuertos,pedidos.get(j).getHora());
+                String origen=pedidos.get(j).getOrigen();
+                String destino=pedidos.get(j).getDestino();
+                ArrayList<Ruta> rutasOF=ciudades.get(origen).rutas.get(destino);
                 Random rn = new Random();
-                for(int h=0;h<pedidos.get(j).getCant();h++){             
-                    crom.alelos.add(rutasOF.get(rn.nextInt(rutasOF.size()))); //generamos aleatoriamente su ruta
-                    crom.pedidos.add(pedidos.get(j));
+                for(int h=0;h<pedidos.get(j).getCant();h++){       // por paquete se genera un alelo     
+                    Ruta ruta=rutasOF.get(rn.nextInt(rutasOF.size()));
+                    Gen gen= new Gen();
+                    gen.ruta=ruta;
+                    gen.tiempo=ruta.tiempo;
+                    gen.pedido=pedidos.get(j);
+                    
+                    crom.genes.add(gen); //generamos aleatoriamente su ruta
                 }
                 
             }
+            //crom.print();
             int fitness=calcFitness(crom);
+            //System.out.println(fitness);
             fitnessTotal+=fitness;
+            //System.out.println(fitnessTotal);
             crom.fitness=fitness;
             cromosomas.add(crom);
         }
         return fitnessTotal;
     }
     public int calcFitness(Cromosoma crom){
-        int fitness=0;
+        int fitness;
         int tiempoTotal=0;
-        for(int i=0;i<crom.alelos.size();i++){
-            Ruta ruta= crom.alelos.get(i);
-            int tiempo=0;
-            //System.out.println(crom.pedidos.size());
-            tiempo+=ruta.vuelos.get(0).gethSalida()-crom.pedidos.get(i).getHora();
-            if(tiempo<0) tiempo+=24;
-            for(int j=0;j<ruta.vuelos.size();j++){
-                Vuelo vuelo=ruta.vuelos.get(j);
-                tiempo+=vuelo.getTiempo();//se suma tiempo de vuelo
-
-                if(j>0){ // si hay escala
-                    int tEspera=vuelo.gethSalida()-ruta.vuelos.get(j-1).gethLlegada();//tiempo de espera
-                    if(tEspera<0) tEspera+=24; // en caso el vuelo sea tomado el dia siguiente
-                    tiempo+=tEspera;
-                }
-            }
-            tiempoTotal+=tiempo;
-            crom.tiempos.add(tiempo);           
+        for(int i=0;i<crom.genes.size();i++){
+            tiempoTotal+=crom.genes.get(i).tiempo;
         }
-        fitness=48*crom.alelos.size()-tiempoTotal;
+        //System.out.println(tiempoTotal);
+        fitness=100*crom.genes.size()-4*tiempoTotal;
         return fitness;
     }
-    public ArrayList<Ruta> generarRutasOF(String origen, String fin,
-                                TreeMap<String,Aeropuerto> aeropuertos,int hora){
-        ArrayList<Ruta> rutasOF= new ArrayList<>();
-        Boolean esCont=esContinental(origen,fin,aeropuertos);
-        int tMax=(esCont)?24:48;
-        
-        for(int i=0;i<aeropuertos.size();i++){
-            if(origen.equals(aeropuertos.get(i).getCodAeropuerto())){ // aeropuerto1 es origen
-                for(int j=0;j<aeropuertos.get(i).vuelos.size();j++){
-                    Vuelo vuelo1=aeropuertos.get(i).vuelos.get(j);
-                    Aeropuerto aero2=vuelo1.getAeroFin();
-                    if(aero2.getCodAeropuerto().equals(fin)){ //si aeropuerto 2 es el destino
-                        Ruta ruta1 = new Ruta();
-                        ruta1.vuelos.add(vuelo1);
-                        rutasOF.add(ruta1);                        
-                    }                    
-                    if(esCont) continue;
-                    for(int h=0;h<aero2.vuelos.size();h++){
-                        Vuelo vuelo2=aero2.vuelos.get(h);
-                        Aeropuerto aero3=vuelo2.getAeroFin();
-                        
-                        if(aero3.getCodAeropuerto().equals(fin)){
-                            int tiempo=0;
-                            tiempo+=vuelo1.gethSalida()-hora;
-                            if(tiempo<0) tiempo+=24;
-                            tiempo+=vuelo1.getTiempo();
-                            int tEspera=vuelo2.gethSalida()-vuelo1.gethLlegada();//tiempo de espera
-                            if(tEspera<0) tEspera+=24; // en caso el vuelo sea tomado el dia siguiente    
-                            tiempo+=tEspera;
-                            tiempo+=vuelo2.getTiempo();
-                            
-                            if(tiempo>tMax) continue;
-                            Ruta ruta2 = new Ruta();
-                            ruta2.vuelos.add(vuelo1);
-                            ruta2.vuelos.add(vuelo2);  
-                            rutasOF.add(ruta2);                           
-                        }
-
-                    }
-                }
-            }
-        }
-        return rutasOF;
-    }    
-    public Boolean esContinental(String origen,String fin,TreeMap<String,Aeropuerto> aeropuertos){
-        Boolean cont=false;
-        int nOrig=-1,nfin=-1;
-        for(int i=0;i<aeropuertos.size();i++){
-            if(aeropuertos.get(i).getCodAeropuerto().equals(origen)) nOrig=i;
-            if(aeropuertos.get(i).getCodAeropuerto().equals(fin)) nfin=i;
-            if(nOrig>=0 && nfin>=0) break;
-        }
-        if(aeropuertos.get(nOrig).getContinente().equals(aeropuertos.get(nfin).getContinente())) // si son mismo continente
-            cont=true;
-        return cont;
-    }
-   /*
-    public ArrayList<Ruta> generarRutasOF(String origen, String fin,
-                                ArrayList<Aeropuerto> aeropuertos){
-        ArrayList<Ruta> rutasOF= new ArrayList<>();
-        for(int i=0;i<aeropuertos.size();i++){
-            if(origen.equals(aeropuertos.get(i).getCodAeropuerto())){
-                for(int j=0;j<aeropuertos.get(i).vecinos.size();j++){
-                    Aeropuerto aeroJ=aeropuertos.get(aeropuertos.get(i).vecinos.get(j));
-                    if(aeroJ.getCodAeropuerto().equals(fin)){
-                        Ruta ruta2 = new Ruta();
-                        ruta2.aeropuertos.add(aeropuertos.get(i));
-                        ruta2.aeropuertos.add(aeroJ);
-                        rutasOF.add(ruta2);                        
-                    }                    
-                    
-                    for(int h=0;h<aeroJ.vecinos.size();h++){
-                        Aeropuerto aeroH=aeropuertos.get(aeroJ.vecinos.get(h));
-                        if(aeroH.getCodAeropuerto().equals(fin)){
-                            Ruta ruta3 = new Ruta();
-                            ruta3.aeropuertos.add(aeropuertos.get(i));
-                            ruta3.aeropuertos.add(aeroJ);  
-                            ruta3.aeropuertos.add(aeroH);
-                            rutasOF.add(ruta3);                           
-                        }
-
-                    }
-                }
-            }
-        }
-        return rutasOF;
-    }
-    */
 
 }

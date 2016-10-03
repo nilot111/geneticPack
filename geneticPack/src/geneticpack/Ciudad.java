@@ -6,16 +6,17 @@
 package geneticpack;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
+import java.util.HashMap;
 import javafx.util.Pair;
+
 
 /**
  *
  * @author GUERRA
  */
-public class Aeropuerto {
+public class Ciudad {
     private int id;
-    private String codAeropuerto;
+    private String codCiudad;
     private String pais;
     private String ciudad;
     private String abreviado;
@@ -23,35 +24,36 @@ public class Aeropuerto {
     private int capacidadTotal=600;
     public ArrayList<String> vecinos= new ArrayList<>();
     public ArrayList<Vuelo> vuelos= new ArrayList<>();
-    public TreeMap<Pair,Integer> capTime = new TreeMap<>(); // capacidades en el tiempo
-    Aeropuerto(){       
+    public HashMap<String,ArrayList<Ruta>> rutas = new HashMap<>(); // llave es el codigo de la ciudad destino, valor es las rutas posibles
+    public HashMap<Pair,Integer> capTime = new HashMap<>(); // capacidades en el tiempo
+    Ciudad(){       
         this.id = -1;
-        this.codAeropuerto = "";
+        this.codCiudad = "";
         this.pais = "";
         this.ciudad = "";
         this.abreviado = "";
         this.continente= "";
     }
     
-    Aeropuerto(int vId, String vCodAeropuerto, String vCiudad, String vPais, String vAbreviado, String vContinente){
+    Ciudad(int vId, String vCodAeropuerto, String vCiudad, String vPais, String vAbreviado, String vContinente){
         this.id = vId;
-        this.codAeropuerto = vCodAeropuerto;        
+        this.codCiudad = vCodAeropuerto;        
         this.ciudad = vCiudad;
         this.pais = vPais;
         this.abreviado = vAbreviado;
         this.continente = vContinente;
         //inicializar capacidades en tiempo
-        //for(int i=0;i<7;i++){
-          //  for(int j=0;j<24;j++){
-            //    Pair<Integer,Integer> key= new Pair<>(i,j);
-              //  capTime.put(key, capacidadTotal);
-            //}         
+        for(int i=1;i<8;i++){
+            for(int j=0;j<24;j++){
+                Pair<Integer,Integer> key= new Pair<>(i,j);
+                capTime.put(key, capacidadTotal);
+            }         
             
-        //}
+        }
         
     }
     
-    public double distancia(Aeropuerto n){
+    public double distancia(Ciudad n){
         //return Math.sqrt(Math.pow((n.getX() - this.getX()),2) + Math.pow((n.getY() - this.getY()),2));
         return 1.0;
     }
@@ -62,17 +64,17 @@ public class Aeropuerto {
     }
 
     /**
-     * @return the codAeropuerto
+     * @return the codCiudad
      */
     public String getCodAeropuerto() {
-        return codAeropuerto;
+        return codCiudad;
     }
 
     /**
-     * @param codAeropuerto the codAeropuerto to set
+     * @param codAeropuerto the codCiudad to set
      */
     public void setCodAeropuerto(String codAeropuerto) {
-        this.codAeropuerto = codAeropuerto;
+        this.codCiudad = codAeropuerto;
     }
 
     /**

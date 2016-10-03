@@ -5,6 +5,9 @@
  */
 package geneticpack;
 
+import java.util.ArrayList;
+
+
 /**
  *
  * @author GUERRA
@@ -21,10 +24,10 @@ public class Vuelo {
     private int id;
     private int husoO;
     private int husoD;
-    private int capacidad=0;
-    private int cantEspacioUsado=0;
-    private Aeropuerto aeroOrig;
-    private Aeropuerto aeroFin;
+    private int capacidad=250;
+    private Ciudad aeroOrig;
+    private Ciudad aeroFin;
+    public ArrayList<Integer> capTime = new ArrayList<>(); // capacidades en el tiempo
     Vuelo(){
         
         hSalida = 0;
@@ -44,6 +47,10 @@ public class Vuelo {
         mLlegada = vMLlegada;
         origen = vOrigen;
         destino = vDestino;
+        //inicializar capacidades en tiempo
+        for(int i=1;i<8;i++){ // los 7 dias de la semana
+            capTime.add(capacidad);
+        }        
     }
     
     public void print(){
@@ -179,42 +186,33 @@ public class Vuelo {
     /**
      * @return the aeroOrig
      */
-    public Aeropuerto getAeroOrig() {
+    public Ciudad getAeroOrig() {
         return aeroOrig;
     }
 
     /**
      * @param aeroOrig the aeroOrig to set
      */
-    public void setAeroOrig(Aeropuerto aeroOrig) {
+    public void setAeroOrig(Ciudad aeroOrig) {
         this.aeroOrig = aeroOrig;
     }
 
     /**
      * @return the aeroFin
      */
-    public Aeropuerto getAeroFin() {
+    public Ciudad getAeroFin() {
         return aeroFin;
     }
 
     /**
      * @param aeroFin the aeroFin to set
      */
-    public void setAeroFin(Aeropuerto aeroFin) {
+    public void setAeroFin(Ciudad aeroFin) {
         this.aeroFin = aeroFin;
     }
 
     /**
      * @return the cantEspacioUsado
      */
-    public int getCantEspacioUsado() {
-        return cantEspacioUsado;
-    }
 
-    /**
-     * @param cantEspacioUsado the cantEspacioUsado to set
-     */
-    public void setCantEspacioUsado(int cantEspacioUsado) {
-        this.cantEspacioUsado = cantEspacioUsado;
-    }
 }

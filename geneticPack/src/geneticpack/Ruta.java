@@ -17,12 +17,21 @@ public class Ruta {
     Ruta(){
         
     }
+    Ruta(Vuelo vuel,int tiemp){
+        vuelos.add(vuel);
+        tiempo=tiemp;
+    }    
     
+    Ruta(Vuelo vuel1, Vuelo vuel2,int tiemp){
+        vuelos.add(vuel1);
+        vuelos.add(vuel2);
+        tiempo=tiemp;
+    }       
     public void print(){
         for(int i=0;i<vuelos.size();i++){
             System.out.print(vuelos.get(i).getAeroOrig().getCodAeropuerto()+"-"+
                             vuelos.get(i).getAeroFin().getCodAeropuerto()+"/");
         }
-        System.out.println();
+        System.out.println(" Tiempo: "+tiempo);
     }
 }

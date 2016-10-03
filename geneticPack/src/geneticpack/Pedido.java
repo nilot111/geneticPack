@@ -15,6 +15,9 @@ public class Pedido {
     private int cant;
     private int hora=9;
     
+    Pedido(){
+        
+    }
     Pedido(String origen, String destino, int cant){
         this.origen=origen;
         this.destino=destino;

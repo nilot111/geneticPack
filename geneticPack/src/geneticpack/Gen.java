@@ -11,14 +11,8 @@ import java.util.ArrayList;
  *
  * @author GUERRA
  */
-public class Cromosoma {
-    public ArrayList<Gen> genes = new ArrayList<>();
-    public int fitness=0;
-    
-    public void print(){
-        for(int i=0;i<genes.size();i++){
-            Gen gen=genes.get(i);
-            gen.ruta.print();
-        }
-    }
+public class Gen {
+    public Ruta ruta = new Ruta();
+    public int tiempo;
+    public Pedido pedido = new Pedido();
 }
