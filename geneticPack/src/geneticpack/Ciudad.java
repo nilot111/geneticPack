@@ -63,7 +63,7 @@ public class Ciudad {
     }
     
     public void print(){
-        System.out.println(this.getCodAeropuerto() + ", " + this.getCiudad() + ", " + this.getPais()+ ", "+ this.getContinente());
+        System.out.println(this.getCodAeropuerto() + ", " + this.getCiudad() + ", " + this.getPais()+ ", "+ this.getContinente()+"-"+this.huso);
         //for(int i=0;i<vecinos.size();i++) System.out.println(vecinos.get(i));
     }
 
