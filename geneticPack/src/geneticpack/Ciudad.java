@@ -56,7 +56,18 @@ public class Ciudad {
         }
         
     }
-    
+    public void reiniciarCaps(){
+        //inicializar capacidades en tiempo
+        for(int i=0;i<7;i++){
+            for(int j=0;j<24;j++){
+                String key=dias[i]+"-"+j+":00";
+                capTime.put(key, capacidadTotal);
+                String key2=dias[i]+"-"+j+":01";
+                capTime.put(key2, capacidadTotal);                
+            }         
+            
+        }        
+    }
     public double distancia(Ciudad n){
         //return Math.sqrt(Math.pow((n.getX() - this.getX()),2) + Math.pow((n.getY() - this.getY()),2));
         return 1.0;

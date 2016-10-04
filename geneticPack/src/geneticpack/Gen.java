@@ -6,6 +6,7 @@
 package geneticpack;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  *
@@ -13,6 +14,7 @@ import java.util.ArrayList;
  */
 public class Gen {
     public Ruta ruta = new Ruta();
-    public int tiempo;
+    public int tiempo=0;
+    public int espacioLibre=0;
     public Pedido pedido = new Pedido();
 }

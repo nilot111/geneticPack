@@ -42,22 +42,10 @@ public class GeneticPack {
         dia= calendario.get(Calendar.DAY_OF_WEEK);
         
         System.out.println("Dia: "+dia+" Hora: "+hora);
-   
-        
-        for(Ciudad ciudad : ciudades.values()) {
-            ciudad.print();
-            /*for(ArrayList<Ruta> rutas : ciudad.rutas.values()){
-                for(int i=0;i<rutas.size();i++){
-                        //System.out.print("Ruta "+i+":");
-                        rutas.get(i).print();
-                }
-                    
-            }*/
-        }
     
         //for(int i=0;i<vuelos.size();i++) vuelos.get(i).print();
-        //Genetico algoritmo= new Genetico();
-        //algoritmo.ejecutar(ciudades,vuelos,pedidos,hora,dia);
+        Genetico algoritmo= new Genetico();
+        algoritmo.ejecutar(ciudades,vuelos,pedidos,hora,dia);
         //imprimirAeros(ciudades);
     }
     

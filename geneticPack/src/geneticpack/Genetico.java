@@ -14,8 +14,8 @@ import java.util.TreeMap;
  * @author GUERRA
  */
 public class Genetico {
-    private int maxPoblacion = 200; // maximo numero de soluciones posibles
-    private int maxGeneraciones=50; // maxiteraciones
+    private int maxPoblacion = 100; // maximo numero de soluciones posibles
+    private int maxGeneraciones=30; // maxiteraciones
     private double probMutacion=0.01;
     private int horaSist;
     private int diaSist;
@@ -83,10 +83,6 @@ public class Genetico {
             for(int j=0;j<rutasPacki.vuelos.size();j++){
                 Vuelo vuelo= rutasPacki.vuelos.get(j);
                 System.out.print(vuelo.getOrigen()+"-"+vuelo.getDestino()+"//");
-                if(j>0){
-                    Aeropuerto aeroDest=rutasPacki.vuelos.get(j).getAeroFin();
-                    aeroDest.setCantEspacioUsado(aeroDest.getCantEspacioUsado()+1);
-                }
             }
             System.out.println("------Tiempo: "+bestCrom.genes.get(i).tiempo);
             tiempoTotal+=bestCrom.genes.get(i).tiempo;
@@ -143,57 +139,112 @@ public class Genetico {
                     gen.ruta=ruta;
                     gen.tiempo=ruta.tiempo;
                     gen.pedido=pedidos.get(j);
-                    actualizarCaps(ruta,pedidos.get(j).dia,pedidos.get(j).hora,pedidos.get(j).min);
+                    //System.out.println("gen "+j+"-"+h+":  "+gen.espacioLibre);
+                    actualizarCaps(gen,pedidos.get(j).dia,pedidos.get(j).hora,pedidos.get(j).min);
+                    //System.out.println("gen "+gen.espacioLibre);
                     crom.genes.add(gen); //generamos aleatoriamente su ruta
                 }
                 
             }
+            reiniciarCapsDeciudades(ciudades);
             //crom.print();
             int fitness=calcFitness(crom);
-            //System.out.println(fitness);
+            System.out.println("fit "+i+": "+fitness);
             fitnessTotal+=fitness;
-            //System.out.println(fitnessTotal);
+            //System.out.println("fitness total "+i+": "+fitnessTotal);
             crom.fitness=fitness;
             cromosomas.add(crom);
         }
+        //System.out.println("fitnessTotal antes de enviar :"+fitnessTotal);
         return fitnessTotal;
     }
+    
+    public void reiniciarCapsDeciudades(TreeMap<String,Ciudad> ciudades){
+        for(Ciudad ciudad: ciudades.values()){
+            ciudad.reiniciarCaps();
+        }
+    }
+    
     public int calcFitness(Cromosoma crom){
         int fitness;
         int tiempoTotal=0;
+        int espaciolibre=0;
         for(int i=0;i<crom.genes.size();i++){
-            tiempoTotal+=crom.genes.get(i).tiempo;
+            Gen gen=crom.genes.get(i);
+            tiempoTotal+=gen.tiempo;
+            espaciolibre+=gen.espacioLibre;
         }
-        //System.out.println(tiempoTotal);
-        fitness=10000*crom.genes.size()-4*tiempoTotal;
+        //System.out.println("espa: "+espaciolibre);
+        //fitness=1*espaciolibre-5*tiempoTotal;
+        fitness=4*48-4*tiempoTotal/crom.genes.size();
+        //System.out.println("fit: "+fitness);
+        
         return fitness;
     }
-    public void actualizarCaps(Ruta ruta,int diaP,int horaP,int minP){ // este es hora y min del pedido////// dia-hora:00 / dia-hora:01
+    public void actualizarCaps(Gen gen,int diaP,int horaP,int minP){ // este es hora y min del pedido////// dia-hora:00 / dia-hora:01
+        Ruta ruta=gen.ruta;
+        int diaK=diaP;
         for(int i=0;i<ruta.vuelos.size();i++){
             Vuelo vuelo=ruta.vuelos.get(i);
             Ciudad ciudadOrig=vuelo.getAeroOrig();
             Ciudad ciudadFin=vuelo.getAeroFin();
             int hSalida=vuelo.gethSalida();
+            int hLlegada=vuelo.gethLlegada();
             int horaKey;
-            int diaK=diaP;;
+            
+            
             //registramos su ingreso
             if(i==0){             
                 if(hSalida<horaP) hSalida+=24;
+                
                 for(int hora=horaP;hora<=hSalida;hora++){
                     horaKey=hora%24;
                     if(hora!=horaP && horaKey==0) diaK++; // se paso al día siguiente
+                    diaK=diaK%7;
                     String key=diasSemana[diaK]+"-"+horaKey+":00";
                     ciudadOrig.capTime.put(key,ciudadOrig.capTime.get(key)-1);  
                     if(hora!=hSalida){
                         String key2=diasSemana[diaK]+"-"+horaKey+":01";
                         ciudadOrig.capTime.put(key2,ciudadOrig.capTime.get(key2)-1);                       
                     }
-                }                
+                }
+                //String keygen=diasSemana[diaK]+"-"+vuelo.gethSalida()+":01";
+                //gen.espacioLibre+=ciudadOrig.capTime.get(keygen);                
             }
             
             //registramos su escala si lo hubiera
             if(i==1){
-                 
+                 int hLlegadaEscala=ruta.vuelos.get(0).gethLlegada(); 
+                 int hSalidaDeOrigen=ruta.vuelos.get(0).gethSalida(); 
+                 int diasTrans=(hSalidaDeOrigen+ruta.vuelos.get(0).getTiempo()+
+                         ruta.vuelos.get(0).getAeroFin().huso
+                         -ruta.vuelos.get(0).getAeroOrig().huso)%24;
+                 diaK=(diaK+diasTrans)%7; //se determina que dia llego a la ciudad escala
+                 if(hSalida<hLlegadaEscala) hSalida+=24; // si la salida es al dia siguiente
+                 for(int hora=hLlegadaEscala;hora<=hSalida;hora++){
+                    horaKey=hora%24;
+                    if(hora!=hLlegadaEscala && horaKey==0) diaK++; // se paso al día siguiente
+                    diaK=diaK%7;
+                    String key=diasSemana[diaK]+"-"+horaKey+":00";
+                    ciudadOrig.capTime.put(key,ciudadOrig.capTime.get(key)-1);  
+                    if(hora!=hSalida){
+                        String key2=diasSemana[diaK]+"-"+horaKey+":01";
+                        ciudadOrig.capTime.put(key2,ciudadOrig.capTime.get(key2)-1);                       
+                    }                 
+                 }
+                String keygen=diasSemana[diaK]+"-"+vuelo.gethSalida()+":01";
+                gen.espacioLibre+=ciudadOrig.capTime.get(keygen);                    
+            }
+            
+            // registramos fin del destino de paquete
+            
+            if(i==ruta.vuelos.size()-1){
+                 int diasTrans=(hSalida+ruta.vuelos.get(i).getTiempo()+
+                         ruta.vuelos.get(i).getAeroFin().huso
+                         -ruta.vuelos.get(i).getAeroOrig().huso)%24;
+                 diaK=(diaK+diasTrans)%7; //se determina que dia llego a la ciudad escala                
+                String Key=diasSemana[diaK]+"-"+vuelo.gethLlegada()+":00";
+                ciudadFin.capTime.put(Key, ciudadFin.capTime.get(Key)-1);
             }
 
         }
