@@ -21,6 +21,7 @@ public class Ciudad {
     private String ciudad;
     private String abreviado;
     private String continente;
+    public int huso;
     private int capacidadTotal=600;
     private String []dias={"Lun","Mar","Mie","Jue","Vie","Sab","Dom"}; 
     public ArrayList<String> vecinos= new ArrayList<>();

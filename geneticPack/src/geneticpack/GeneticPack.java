@@ -32,7 +32,7 @@ public class GeneticPack {
         ArrayList<Vuelo> vuelos= new ArrayList<>();
         ArrayList<Pedido> pedidos= new ArrayList<>();
         lector.leerArchivos("Extras/_aeropuertos.OACI.txt", "Extras/_plan_vuelo.txt",
-                            "Extras/_pedidos_04-10-2016.txt", vuelos, ciudades, pedidos);
+                            "Extras/_pedidos_04-10-2016.txt","Extras/_husos_horarios.txt", vuelos, ciudades, pedidos);
         
         pedidos.get(pedidos.size()-1).print();
         asignarTipovuelo(vuelos,ciudades);

@@ -18,13 +18,34 @@ import java.util.logging.Logger;
  * @author GUERRA
  */
 public class Lectura {
-    public void leerArchivos(String archAeropuertos,String archVuelos,String archPedidos,ArrayList<Vuelo> vuelos,
+    public void leerArchivos(String archAeropuertos,String archVuelos,String archPedidos,String archHusos,ArrayList<Vuelo> vuelos,
                             TreeMap<String,Ciudad>  aeropuertos, ArrayList<Pedido> pedidos){
         leerAeropuertos(archAeropuertos,aeropuertos);
         leerVuelos(archVuelos,vuelos);
         leerPedidos(archPedidos,pedidos);
+        leerHusos(archHusos,aeropuertos);
     }
-
+    
+    public void leerHusos(String archHusos,TreeMap<String,Ciudad>  ciudades){
+        String line;
+        String [] value;
+        
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(archHusos));
+            try {
+                while ((line = br.readLine()) != null){
+                    value = line.trim().split("\t");
+                    String ciud=value[1];
+                    int huso=Integer.parseInt(value[2]);
+                    ciudades.get(ciud).huso=huso;
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Lectura.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Lectura.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     public void leerAeropuertos(String archAeropuertos,TreeMap<String,Ciudad> aeropuertos){
         
         String line;
