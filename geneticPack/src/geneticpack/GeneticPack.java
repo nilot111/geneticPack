@@ -32,14 +32,16 @@ public class GeneticPack {
         ArrayList<Vuelo> vuelos= new ArrayList<>();
         ArrayList<Pedido> pedidos= new ArrayList<>();
         lector.leerArchivos("Extras/_aeropuertos.OACI.txt", "Extras/_plan_vuelo.txt",
-                            "Extras/_pedidos_N.txt", vuelos, ciudades, pedidos);
+                            "Extras/_pedidos_04-10-2016.txt", vuelos, ciudades, pedidos);
+        
+        pedidos.get(pedidos.size()-1).print();
         asignarTipovuelo(vuelos,ciudades);
         generarRutas(ciudades);
         Calendar calendario = Calendar.getInstance();
         hora=calendario.get(Calendar.HOUR_OF_DAY);
         dia= calendario.get(Calendar.DAY_OF_WEEK);
         
-        //System.out.println("Dia: "+dia+" Hora: "+hora);
+        System.out.println("Dia: "+dia+" Hora: "+hora);
    
         /*
         for(Ciudad ciudad : ciudades.values()) {
@@ -55,7 +57,7 @@ public class GeneticPack {
     
         //for(int i=0;i<vuelos.size();i++) vuelos.get(i).print();
         Genetico algoritmo= new Genetico();
-        algoritmo.ejecutar(ciudades,vuelos,pedidos);
+        algoritmo.ejecutar(ciudades,vuelos,pedidos,hora,dia);
         //imprimirAeros(ciudades);
     }
     

@@ -22,10 +22,11 @@ public class Ciudad {
     private String abreviado;
     private String continente;
     private int capacidadTotal=600;
+    private String []dias={"Lun","Mar","Mie","Jue","Vie","Sab","Dom"}; 
     public ArrayList<String> vecinos= new ArrayList<>();
     public ArrayList<Vuelo> vuelos= new ArrayList<>();
     public HashMap<String,ArrayList<Ruta>> rutas = new HashMap<>(); // llave es el codigo de la ciudad destino, valor es las rutas posibles
-    public HashMap<Pair,Integer> capTime = new HashMap<>(); // capacidades en el tiempo
+    public HashMap<String,Integer> capTime = new HashMap<>(); // capacidades en el tiempo
     Ciudad(){       
         this.id = -1;
         this.codCiudad = "";
@@ -43,9 +44,9 @@ public class Ciudad {
         this.abreviado = vAbreviado;
         this.continente = vContinente;
         //inicializar capacidades en tiempo
-        for(int i=1;i<8;i++){
+        for(int i=0;i<7;i++){
             for(int j=0;j<24;j++){
-                Pair<Integer,Integer> key= new Pair<>(i,j);
+                String key=dias[i]+"-"+j;
                 capTime.put(key, capacidadTotal);
             }         
             

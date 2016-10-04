@@ -17,19 +17,24 @@ public class Genetico {
     private int maxPoblacion = 200; // maximo numero de soluciones posibles
     private int maxGeneraciones=50; // maxiteraciones
     private double probMutacion=0.01;
+    private int hora;
+    private int dia;
+    private String []dias={"Lun","Mar","Mie","Jue","Vie","Sab","Dom"}; // dia -2 
     private ArrayList<Ruta> universoRutas= new ArrayList<>();
     private ArrayList<Cromosoma> cromosomas= new ArrayList<>();
     Genetico(){
         
     }
     public void ejecutar(TreeMap<String,Ciudad> aeropuertos, ArrayList<Vuelo> vuelos,
-                         ArrayList<Pedido> pedidos){
+                         ArrayList<Pedido> pedidos,int hora,int dia){
         //generarRutas(aeropuertos);
         int fitnessTotal=generarPoblacion(pedidos,aeropuertos);
         System.out.println("fitness Total: "+fitnessTotal);
         //ArrayList<Ruta> rutas= generarRutasOF("SPIM","SGAS",aeropuertos);
         //for(int i=0;i<rutas.size();i++) rutas.get(i).print();
         reproduccion(fitnessTotal);
+        this.hora=hora;
+        this.dia=dia;
     }
     
     public void reproduccion(int fitnessTotal){
@@ -138,7 +143,7 @@ public class Genetico {
                     gen.ruta=ruta;
                     gen.tiempo=ruta.tiempo;
                     gen.pedido=pedidos.get(j);
-                    
+                    actualizarCaps(ruta,pedidos.get(j).dia,pedidos.get(j).hora,pedidos.get(j).min);
                     crom.genes.add(gen); //generamos aleatoriamente su ruta
                 }
                 
@@ -160,8 +165,13 @@ public class Genetico {
             tiempoTotal+=crom.genes.get(i).tiempo;
         }
         //System.out.println(tiempoTotal);
-        fitness=100*crom.genes.size()-4*tiempoTotal;
+        fitness=10000*crom.genes.size()-4*tiempoTotal;
         return fitness;
     }
-
+    public void actualizarCaps(Ruta ruta,int dia,int hora,int min){
+        for(int i=0;i<ruta.vuelos.size();i++){
+            Vuelo vuelo=ruta.vuelos.get(i);
+            
+        }
+    }
 }

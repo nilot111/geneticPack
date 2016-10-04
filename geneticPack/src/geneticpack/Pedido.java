@@ -13,15 +13,24 @@ public class Pedido {
     private String origen;
     private String destino;
     private int cant;
-    private int hora=9;
+    public int hora;
+    public int min;
+    public int dia;
+    public int mes;
+    public int año;
     
     Pedido(){
         
     }
-    Pedido(String origen, String destino, int cant){
+    Pedido(String origen, String destino, int cant,int hora, int min,int dia,int mes,int año){
         this.origen=origen;
         this.destino=destino;
         this.cant=cant;
+        this.hora=hora;
+        this.min=min;
+        this.dia=dia;
+        this.mes=mes;
+        this.año=año;
     }
 
     /**
@@ -34,7 +43,7 @@ public class Pedido {
      */
     
     public void print(){
-        System.out.println(origen+"-"+destino+"-"+cant);
+        System.out.println(origen+"-"+destino+"-"+cant+"-"+hora+":"+min);
     }
     
     public String getOrigen() {

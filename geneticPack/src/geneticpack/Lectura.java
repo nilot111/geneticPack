@@ -99,7 +99,9 @@ public class Lectura {
             String line;
             String [] value;
             String origen, destino;
-            int cant;               
+            int cant; 
+            int hora,min;
+            int dia,mes,año;
             BufferedReader br = new BufferedReader(new FileReader(archPedidos));
             while ((line = br.readLine()) != null)
             {
@@ -109,7 +111,16 @@ public class Lectura {
                 origen = value[0];
                 destino = value[1];
                 cant = Integer.parseInt(value[2]);
-                Pedido ped = new Pedido(origen,destino,cant);
+                String horaMin=value[3];
+                String fecha=value[4];
+                value=horaMin.trim().split(":");
+                hora=Integer.parseInt(value[0]);
+                min=Integer.parseInt(value[1]);
+                value=fecha.trim().split("/");
+                dia=Integer.parseInt(value[0]);
+                mes=Integer.parseInt(value[1]);
+                año=Integer.parseInt(value[2]);
+                Pedido ped = new Pedido(origen,destino,cant,hora,min,dia,mes,año);
                 pedidos.add(ped);
             }
             br.close();
