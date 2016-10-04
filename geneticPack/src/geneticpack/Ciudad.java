@@ -26,7 +26,7 @@ public class Ciudad {
     public ArrayList<String> vecinos= new ArrayList<>();
     public ArrayList<Vuelo> vuelos= new ArrayList<>();
     public HashMap<String,ArrayList<Ruta>> rutas = new HashMap<>(); // llave es el codigo de la ciudad destino, valor es las rutas posibles
-    public HashMap<String,Integer> capTime = new HashMap<>(); // capacidades en el tiempo
+    public HashMap<String,Integer> capTime = new HashMap<>(); // capacidades en el tiempo, key es : dia-hora:00 / dia-hora:01
     Ciudad(){       
         this.id = -1;
         this.codCiudad = "";
@@ -46,8 +46,10 @@ public class Ciudad {
         //inicializar capacidades en tiempo
         for(int i=0;i<7;i++){
             for(int j=0;j<24;j++){
-                String key=dias[i]+"-"+j;
+                String key=dias[i]+"-"+j+":00";
                 capTime.put(key, capacidadTotal);
+                String key2=dias[i]+"-"+j+":01";
+                capTime.put(key2, capacidadTotal);                
             }         
             
         }

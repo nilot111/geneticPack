@@ -17,9 +17,9 @@ public class Genetico {
     private int maxPoblacion = 200; // maximo numero de soluciones posibles
     private int maxGeneraciones=50; // maxiteraciones
     private double probMutacion=0.01;
-    private int hora;
-    private int dia;
-    private String []dias={"Lun","Mar","Mie","Jue","Vie","Sab","Dom"}; // dia -2 
+    private int horaSist;
+    private int diaSist;
+    private String []diasSemana={"Sab","Dom","Lun","Mar","Mie","Jue","Vie",};
     private ArrayList<Ruta> universoRutas= new ArrayList<>();
     private ArrayList<Cromosoma> cromosomas= new ArrayList<>();
     Genetico(){
@@ -33,8 +33,8 @@ public class Genetico {
         //ArrayList<Ruta> rutas= generarRutasOF("SPIM","SGAS",aeropuertos);
         //for(int i=0;i<rutas.size();i++) rutas.get(i).print();
         reproduccion(fitnessTotal);
-        this.hora=hora;
-        this.dia=dia;
+        this.horaSist=hora;
+        this.diaSist=dia;
     }
     
     public void reproduccion(int fitnessTotal){
@@ -168,10 +168,35 @@ public class Genetico {
         fitness=10000*crom.genes.size()-4*tiempoTotal;
         return fitness;
     }
-    public void actualizarCaps(Ruta ruta,int dia,int hora,int min){
+    public void actualizarCaps(Ruta ruta,int diaP,int horaP,int minP){ // este es hora y min del pedido////// dia-hora:00 / dia-hora:01
         for(int i=0;i<ruta.vuelos.size();i++){
             Vuelo vuelo=ruta.vuelos.get(i);
+            Ciudad ciudadOrig=vuelo.getAeroOrig();
+            Ciudad ciudadFin=vuelo.getAeroFin();
+            int hSalida=vuelo.gethSalida();
+            int horaKey;
+            int diaK=diaP;;
+            //registramos su ingreso
+            if(i==0){             
+                if(hSalida<horaP) hSalida+=24;
+                for(int hora=horaP;hora<=hSalida;hora++){
+                    horaKey=hora%24;
+                    if(hora!=horaP && horaKey==0) diaK++; // se paso al día siguiente
+                    String key=diasSemana[diaK]+"-"+horaKey+":00";
+                    ciudadOrig.capTime.put(key,ciudadOrig.capTime.get(key)-1);  
+                    if(hora!=hSalida){
+                        String key2=diasSemana[diaK]+"-"+horaKey+":01";
+                        ciudadOrig.capTime.put(key2,ciudadOrig.capTime.get(key2)-1);                       
+                    }
+                }                
+            }
             
+            //registramos su escala si lo hubiera
+            if(i==1){
+                 
+            }
+
         }
     }
+    
 }
