@@ -132,9 +132,23 @@ public class Genetico {
                 String origen=pedidos.get(j).getOrigen();
                 String destino=pedidos.get(j).getDestino();
                 ArrayList<Ruta> rutasOF=ciudades.get(origen).rutas.get(destino);
+                for(int m=0;m<rutasOF.size();m++)
+                    rutasOF.get(m).print();
                 Random rn = new Random();
+                int tMax=48;
+                if(ciudades.get(origen).getContinente().equals(ciudades.get(destino).getContinente())) tMax=24;
+                int hPedido=pedidos.get(j).hora;
+                int tTotal=50;
                 for(int h=0;h<pedidos.get(j).getCant();h++){       // por paquete se genera un alelo     
                     Ruta ruta=rutasOF.get(rn.nextInt(rutasOF.size()));
+                    while(tTotal>tMax){ // condición de negocio : tiempo maximo
+                        ruta=rutasOF.get(rn.nextInt(rutasOF.size()));
+                        int hSalida=ruta.vuelos.get(0).gethSalida();
+                        if(hSalida<hPedido) hSalida+=24;
+                        tTotal=hSalida-hPedido+ruta.tiempo;
+                        System.out.println(tTotal+"-"+tMax);
+                    }  
+                    //System.out.println("total: "+rutasOF.size()+" random: "+rn.nextInt(rutasOF.size()));
                     Gen gen= new Gen();
                     gen.ruta=ruta;
                     gen.tiempo=ruta.tiempo;
@@ -149,7 +163,7 @@ public class Genetico {
             reiniciarCapsDeciudades(ciudades);
             //crom.print();
             int fitness=calcFitness(crom);
-            System.out.println("fit "+i+": "+fitness);
+            //System.out.println("fit "+i+": "+fitness);
             fitnessTotal+=fitness;
             //System.out.println("fitness total "+i+": "+fitnessTotal);
             crom.fitness=fitness;
