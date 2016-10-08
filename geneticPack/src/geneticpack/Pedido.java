@@ -18,6 +18,7 @@ public class Pedido {
     public int dia;
     public int mes;
     public int año;
+    public int diaSemana;
     
     Pedido(){
         

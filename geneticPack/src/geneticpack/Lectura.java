@@ -9,7 +9,11 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -123,6 +127,11 @@ public class Lectura {
             int cant; 
             int hora,min;
             int dia,mes,año;
+            
+            Calendar c=Calendar.getInstance();
+            SimpleDateFormat format= new SimpleDateFormat("dd/MM/yyyy");
+            
+            
             BufferedReader br = new BufferedReader(new FileReader(archPedidos));
             while ((line = br.readLine()) != null)
             {
@@ -141,11 +150,17 @@ public class Lectura {
                 dia=Integer.parseInt(value[0]);
                 mes=Integer.parseInt(value[1]);
                 año=Integer.parseInt(value[2]);
+                Date fech=format.parse(fecha);
+                c.setTime(fech);
+                int diaSem=c.get(Calendar.DAY_OF_WEEK);
                 Pedido ped = new Pedido(origen,destino,cant,hora,min,dia,mes,año);
+                ped.diaSemana=diaSem;
                 pedidos.add(ped);
             }
             br.close();
         } catch (IOException ex) {
+            Logger.getLogger(Lectura.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
             Logger.getLogger(Lectura.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

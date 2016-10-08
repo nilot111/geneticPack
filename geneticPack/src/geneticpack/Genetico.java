@@ -132,8 +132,8 @@ public class Genetico {
                 String origen=pedidos.get(j).getOrigen();
                 String destino=pedidos.get(j).getDestino();
                 ArrayList<Ruta> rutasOF=ciudades.get(origen).rutas.get(destino);
-                for(int m=0;m<rutasOF.size();m++)
-                    rutasOF.get(m).print();
+                //for(int m=0;m<rutasOF.size();m++)
+                  //  rutasOF.get(m).print();
                 Random rn = new Random();
                 int tMax=48;
                 if(ciudades.get(origen).getContinente().equals(ciudades.get(destino).getContinente())) tMax=24;
@@ -141,13 +141,13 @@ public class Genetico {
                 int tTotal=50;
                 for(int h=0;h<pedidos.get(j).getCant();h++){       // por paquete se genera un alelo     
                     Ruta ruta=rutasOF.get(rn.nextInt(rutasOF.size()));
-                    while(tTotal>tMax){ // condición de negocio : tiempo maximo
+                    /*while(tTotal>tMax){ // condición de negocio : tiempo maximo
                         ruta=rutasOF.get(rn.nextInt(rutasOF.size()));
                         int hSalida=ruta.vuelos.get(0).gethSalida();
                         if(hSalida<hPedido) hSalida+=24;
                         tTotal=hSalida-hPedido+ruta.tiempo;
                         System.out.println(tTotal+"-"+tMax);
-                    }  
+                    } */ 
                     //System.out.println("total: "+rutasOF.size()+" random: "+rn.nextInt(rutasOF.size()));
                     Gen gen= new Gen();
                     gen.ruta=ruta;
@@ -195,6 +195,53 @@ public class Genetico {
         
         return fitness;
     }
+    
+    public int calcFitness2(Cromosoma crom){
+        int fitness=0;
+        int tiempoTotal=0;
+        int espacioLibreTot=0;
+        int nCiudades=0;
+        for(int i=0;i<crom.genes.size();i++){
+            Gen gen=crom.genes.get(i);
+            int diaSem=gen.pedido.diaSemana;
+            int horaPed=gen.pedido.hora;
+            nCiudades=0;
+            int espacioLibre=0;
+            Vuelo vuelo=gen.ruta.vuelos.get(0);
+            if(vuelo.gethSalida()<horaPed) diaSem++;
+            diaSem=diaSem%7;
+            String key=genLlave(diaSem,vuelo.gethSalida(),0);
+            espacioLibre+=vuelo.getAeroOrig().capTime.get(key);// consulté el primero
+            nCiudades++;
+            int diasTrans=diasTrans(vuelo);
+            diaSem=(diaSem+ diasTrans)%7; // cuando toma el vuelo se actualiza el dia
+            if(gen.ruta.vuelos.size()==1){ // si no tiene escala  consulto destino final
+                key=genLlave(diaSem,vuelo.gethLlegada(),0);
+                espacioLibre+=vuelo.getAeroOrig().capTime.get(key);
+                nCiudades++;
+            }
+            else{ // tiene escala
+                Vuelo vuelo2=gen.ruta.vuelos.get(1);
+                if(vuelo2.gethSalida()<vuelo.gethLlegada()) diaSem++;
+                diaSem=diaSem%7;
+                key=genLlave(diaSem,vuelo2.gethSalida(),0);
+                espacioLibre+=vuelo.getAeroOrig().capTime.get(key);
+                nCiudades++;  
+                
+                //destino Final               
+                diasTrans=diasTrans(vuelo2);
+                diaSem=(diaSem+ diasTrans)%7; // cuando toma el vuelo se actualiza el dia
+                key=genLlave(diaSem,vuelo2.gethLlegada(),0);
+                espacioLibre+=vuelo.getAeroOrig().capTime.get(key);
+                nCiudades++;                                 
+                
+            }
+            gen.espacioLibre=(int)(espacioLibre /nCiudades);
+            
+        }
+        return fitness;
+    }
+    
     public void actualizarCaps(Gen gen,int diaP,int horaP,int minP){ // este es hora y min del pedido////// dia-hora:00 / dia-hora:01
         Ruta ruta=gen.ruta;
         int diaK=diaP;
@@ -230,9 +277,7 @@ public class Genetico {
             if(i==1){
                  int hLlegadaEscala=ruta.vuelos.get(0).gethLlegada(); 
                  int hSalidaDeOrigen=ruta.vuelos.get(0).gethSalida(); 
-                 int diasTrans=(hSalidaDeOrigen+ruta.vuelos.get(0).getTiempo()+
-                         ruta.vuelos.get(0).getAeroFin().huso
-                         -ruta.vuelos.get(0).getAeroOrig().huso)%24;
+                 int diasTrans=diasTrans(ruta.vuelos.get(0));
                  diaK=(diaK+diasTrans)%7; //se determina que dia llego a la ciudad escala
                  if(hSalida<hLlegadaEscala) hSalida+=24; // si la salida es al dia siguiente
                  for(int hora=hLlegadaEscala;hora<=hSalida;hora++){
@@ -262,6 +307,21 @@ public class Genetico {
             }
 
         }
+    }
+    
+    public int diasTrans(Vuelo vuel){
+        
+        int hSalida=vuel.gethSalida();
+        int hLlegada=vuel.gethLlegada();
+        Ciudad ciudOrig=vuel.getAeroOrig();
+        Ciudad ciudFin=vuel.getAeroFin();
+        int diasTrans=(hSalida+vuel.getTiempo()+ciudFin.huso-ciudOrig.huso)%24;
+        return diasTrans;
+    }
+    
+    public String genLlave(int diaK,int horaK,int minK){
+        int dia=diaK%7;
+        return diasSemana[dia]+"-"+horaK+":0"+minK;
     }
     
 }
