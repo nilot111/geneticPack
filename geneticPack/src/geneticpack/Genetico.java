@@ -237,7 +237,7 @@ public class Genetico {
                 
             }
             gen.espacioLibre=(int)(espacioLibre /nCiudades);
-            
+            espacioLibreTot+=gen.espacioLibre;
         }
         return fitness;
     }
